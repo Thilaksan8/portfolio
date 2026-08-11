@@ -77,13 +77,16 @@
   }
   .brand .dot{width:7px; height:7px; border-radius:50%; background:var(--accent); box-shadow:0 0 10px var(--accent);}
   .navlinks{display:flex; gap:34px; font-family:var(--mono); font-size:12.5px; letter-spacing:0.04em; text-transform:uppercase;}
-  .navlinks a{color:var(--muted); position:relative; padding:4px 0;}
-  .navlinks a:hover{color:var(--text);}
-  .navlinks a::after{
+  .navlinks button{
+    appearance:none; background:none; border:0; color:var(--muted); position:relative; padding:4px 0;
+    font:inherit; cursor:pointer;
+  }
+  .navlinks button:hover{color:var(--text);}
+  .navlinks button::after{
     content:''; position:absolute; left:0; bottom:0; width:0; height:1px; background:var(--accent);
     transition:width .25s ease;
   }
-  .navlinks a:hover::after{width:100%;}
+  .navlinks button:hover::after{width:100%;}
   @media (max-width:760px){ .navlinks{display:none;} }
 
   /* ---------- HERO ---------- */
@@ -332,11 +335,11 @@
   <div class="wrap">
     <div class="brand"><span class="dot"></span>Thilakshan Elango</div>
     <div class="navlinks">
-      <a href="#home">Home</a>
-      <a href="#experience">Experience</a>
-      <a href="#projects">Projects</a>
-      <a href="#skills">Skills</a>
-      <a href="#contact">Contact</a>
+      <button type="button" data-scroll-target="home">Home</button>
+      <button type="button" data-scroll-target="experience">Experience</button>
+      <button type="button" data-scroll-target="projects">Projects</button>
+      <button type="button" data-scroll-target="skills">Skills</button>
+      <button type="button" data-scroll-target="contact">Contact</button>
     </div>
   </div>
 </nav>
@@ -659,9 +662,24 @@
   const progress = document.querySelector('.scroll-progress');
   const photo = document.querySelector('.hero-photo-wrap');
   const revealTargets = document.querySelectorAll('.sec-head, .proj-card, .tl-item, .edu-card');
+  const navButtons = document.querySelectorAll('.navlinks [data-scroll-target]');
   let scrollTicking = false;
 
   root.classList.add('js');
+
+  if(window.location.hash){
+    window.history.replaceState(null, '', window.location.pathname + window.location.search);
+  }
+
+  navButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const target = document.getElementById(button.dataset.scrollTarget);
+      if(target){
+        target.scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'});
+      }
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    });
+  });
 
   revealTargets.forEach((element, index) => {
     element.classList.add('reveal');
